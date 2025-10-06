@@ -8,21 +8,13 @@ plugins {
 
 kotlin {
     js(IR) {
-        browser {
-            commonWebpackConfig {
-                outputFileName = "compose-js.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
     
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser {
-            commonWebpackConfig {
-                outputFileName = "compose-wasmjs.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
     
