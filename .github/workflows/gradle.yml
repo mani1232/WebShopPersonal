@@ -42,12 +42,14 @@ jobs:
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
+      with:
+        path: composeApp/build/dist/composeWebCompatibility/productionExecutable/
 
     - name: Setup Pages
       uses: actions/configure-pages@v5
       with:
         # Upload entire repository
-        path: '/composeApp/build/dist/composeWebCompatibility/productionExecutable/'
+        path: '.'
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
