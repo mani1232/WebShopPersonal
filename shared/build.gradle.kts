@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -16,7 +17,10 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.browser)
+            implementation(kotlinWrappers.browser)
+            implementation(libs.coroutines)
+            implementation(libs.koin)
+            implementation(libs.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
