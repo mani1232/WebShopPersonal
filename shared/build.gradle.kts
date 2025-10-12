@@ -6,18 +6,19 @@ plugins {
 }
 
 kotlin {
+    jvm()
+
     js(IR) {
         browser()
     }
-    
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
     }
-    
+
     sourceSets {
         commonMain.dependencies {
-            implementation(kotlinWrappers.browser)
             implementation(libs.coroutines)
             implementation(libs.koin)
             implementation(libs.serialization.json)
@@ -25,6 +26,15 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        val webMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation(kotlinWrappers.browser)
+            }
+        }
+
+        jsMain.get().dependsOn(webMain)
+        wasmJsMain.get().dependsOn(webMain)
     }
 }
 

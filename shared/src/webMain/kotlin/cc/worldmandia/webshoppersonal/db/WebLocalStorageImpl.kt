@@ -2,20 +2,20 @@ package cc.worldmandia.webshoppersonal.db
 
 import web.storage.localStorage
 
-class LocalStorageImpl: StringBasedStorage {
-    override suspend fun get(key: String): String? {
+class WebLocalStorageImpl : StringBasedStorage {
+    override fun get(key: String): String? {
         return localStorage.getItem(key)
     }
 
-    override suspend fun put(key: String, value: String) {
+    override fun put(key: String, value: String) {
         localStorage.setItem(key, value)
     }
 
-    override suspend fun remove(key: String) {
+    override fun remove(key: String) {
         localStorage.removeItem(key)
     }
 
-    override suspend fun clear(key: String) {
+    override fun clear(key: String) {
         localStorage.clear()
     }
 }

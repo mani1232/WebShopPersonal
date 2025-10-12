@@ -8,6 +8,7 @@ plugins {
 }
 
 kotlin {
+    applyDefaultHierarchyTemplate()
     js(IR) {
         browser()
         binaries.executable()
@@ -29,14 +30,19 @@ kotlin {
             implementation(compose.material3AdaptiveNavigationSuite)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.navigation.ui)
+            implementation(libs.savedstate)
+
+            implementation(libs.shimmer)
+
             implementation(projects.shared)
+
             implementation(libs.coroutines)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.navigation)
-            implementation(libs.navigation)
-            implementation(libs.navigation.event)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
