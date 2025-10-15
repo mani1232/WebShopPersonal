@@ -1,8 +1,8 @@
 [versions]
-androidx-lifecycle = "2.10.0-SNAPSHOT+default"
-composeMultiplatform = "1.10.0-SNAPSHOT+default"
-navigation = "1.0.0-SNAPSHOT+default"
-savedstate = "1.4.0-SNAPSHOT+default"
+androidx-lifecycle = "2.10.0+dev3084"
+composeMultiplatform = "1.10.0+dev3084"
+navigation = "1.0.0+dev3084"
+savedstate = "1.4.0+dev3084"
 junit = "6.0.0"
 kotlin = "2.3.0-Beta1"
 ktor = "3.3.1"

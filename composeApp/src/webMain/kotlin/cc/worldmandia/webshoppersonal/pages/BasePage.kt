@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -25,11 +26,18 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import cc.worldmandia.webshoppersonal.LocalAppSettings
 import cc.worldmandia.webshoppersonal.entity.BrowserData
 import cc.worldmandia.webshoppersonal.models.BasePageViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.getKoin
@@ -72,9 +80,18 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
                     .nestedScroll(scrollBottomBehavior.nestedScrollConnection, nestedDispatcher), topBar = {
                     TopAppBar(
                         title = {
-                            Text("Top app bar")
+                            Text("Shop Name")
                         },
-                        scrollBehavior = scrollTopBehavior
+                        scrollBehavior = scrollTopBehavior,
+                        actions = {
+                            IconButton(onClick = {
+                                scope.launch {
+                                    lazyState.animateScrollToItem(lazyState.layoutInfo.totalItemsCount - 1)
+                                }
+                            }) {
+                                Icon(Icons.Default.ArrowDownward, contentDescription = "Scroll to down")
+                            }
+                        }
                     )
                 }, bottomBar = {
                     BottomAppBar(
@@ -97,15 +114,19 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
                                 selectedLang = it
                             }
 
-                           Box(modifier = Modifier.padding(10.dp).size(48.dp)) {
-                               IconButton(onClick = {
-                                   scope.launch {
-                                       lazyState.animateScrollToItem(0)
-                                   }
-                               }) {
-                                   Icon(Icons.Default.ArrowUpward, contentDescription = "Scroll to top", modifier = Modifier.size(32.dp))
-                               }
-                           }
+                            Box(modifier = Modifier.padding(10.dp).size(48.dp)) {
+                                IconButton(onClick = {
+                                    scope.launch {
+                                        lazyState.animateScrollToItem(0)
+                                    }
+                                }) {
+                                    Icon(
+                                        Icons.Default.ArrowUpward,
+                                        contentDescription = "Scroll to top",
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }, floatingActionButton = {
@@ -120,69 +141,71 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
                     }
                 }) { innerPadding ->
 
-                MainPageContent(lazyState = lazyState, innerPadding = innerPadding)
+                //MainPageContent(lazyState = lazyState, innerPadding = innerPadding)
 
-                //val backStack = rememberNavBackStack(SavedStateConfiguration.DEFAULT, Routes.MainPage)
-//
-                //NavDisplay(
-                //    backStack = backStack,
-                //    onBack = { backStack.removeLastOrNull() },
-                //    entryProvider = entryProvider {
-                //        entry<Routes.MainPage> {
-                //            MainPageContent(lazyState = lazyState, innerPadding = innerPadding) {
-                //                Button(onClick = { backStack.add(Routes.AboutUs) }) {
-                //                    Text("Go to Screen B")
-                //                }
-                //            }
-                //        }
-                //        entry<Routes.AboutUs> {
-                //            Button(onClick = { backStack.add(Routes.Contact) }) {
-                //                Text("Go to Screen C")
-                //            }
-                //        }
-                //        entry<Routes.Contact>(
-                //            metadata = NavDisplay.transitionSpec {
-                //                // Slide new content up, keeping the old content in place underneath
-                //                slideInVertically(
-                //                    initialOffsetY = { it },
-                //                    animationSpec = tween(1000)
-                //                ) togetherWith ExitTransition.KeepUntilTransitionsFinished
-                //            } + NavDisplay.popTransitionSpec {
-                //                // Slide old content down, revealing the new content in place underneath
-                //                EnterTransition.None togetherWith
-                //                        slideOutVertically(
-                //                            targetOffsetY = { it },
-                //                            animationSpec = tween(1000)
-                //                        )
-                //            } + NavDisplay.predictivePopTransitionSpec {
-                //                // Slide old content down, revealing the new content in place underneath
-                //                EnterTransition.None togetherWith
-                //                        slideOutVertically(
-                //                            targetOffsetY = { it },
-                //                            animationSpec = tween(1000)
-                //                        )
-                //            }
-                //        ) {
-                //            Text("This is Screen C")
-                //        }
-                //    },
-                //    transitionSpec = {
-                //        // Slide in from right when navigating forward
-                //        slideInHorizontally(initialOffsetX = { it }) togetherWith
-                //                slideOutHorizontally(targetOffsetX = { -it })
-                //    },
-                //    popTransitionSpec = {
-                //        // Slide in from left when navigating back
-                //        slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                //                slideOutHorizontally(targetOffsetX = { it })
-                //    },
-                //    predictivePopTransitionSpec = {
-                //        // Slide in from left when navigating back
-                //        slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                //                slideOutHorizontally(targetOffsetX = { it })
-                //    },
-                //    modifier = Modifier.padding(innerPadding)
-                //)
+                val backStack = rememberNavBackStack(SavedStateConfiguration {
+                    serializersModule = SerializersModule {
+                        polymorphic(NavKey::class) {
+                            subclass(Routes.MainPage::class)
+                            subclass(Routes.AboutUs::class)
+                            subclass(Routes.Contact::class)
+                        }
+                    }
+                }, Routes.MainPage)
+
+                NavDisplay(
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryProvider = entryProvider {
+                        entry<Routes.MainPage> {
+                            MainPageContent(lazyState = lazyState, innerPadding = innerPadding) {
+                                Button(onClick = { backStack.add(Routes.AboutUs) }) {
+                                    Text("Go to Screen B")
+                                }
+                                Button(onClick = { backStack.removeLastOrNull() }) {
+                                    Text("Try to back")
+                                }
+                            }
+                        }
+                        entry<Routes.AboutUs> {
+                            BaseContentPage(
+                                lazyState = lazyState, innerPadding = innerPadding,
+                                other = buildList {
+                                    add {
+                                        Button(onClick = { backStack.add(Routes.Contact) }) {
+                                            Text("Go to Screen C")
+                                        }
+                                    }
+                                    add {
+                                        Button(onClick = { backStack.removeLastOrNull() }) {
+                                            Text("Back")
+                                        }
+                                    }
+                                },
+                            )
+                        }
+                        entry<Routes.Contact> {
+                            Button(onClick = { backStack.removeLastOrNull() }) {
+                                Text("Back")
+                            }
+                        }
+                    },
+                    //transitionSpec = {
+                    //    // Slide in from right when navigating forward
+                    //    slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    //            slideOutHorizontally(targetOffsetX = { -it })
+                    //},
+                    //popTransitionSpec = {
+                    //    // Slide in from left when navigating back
+                    //    slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    //            slideOutHorizontally(targetOffsetX = { it })
+                    //},
+                    //predictivePopTransitionSpec = {
+                    //    // Slide in from left when navigating back
+                    //    slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    //            slideOutHorizontally(targetOffsetX = { it })
+                    //},
+                )
             }
         }
     }
