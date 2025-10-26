@@ -6,6 +6,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import androidx.navigation3.runtime.NavKey
+import cc.worldmandia.webshoppersonal.db.removeLoader
 import cc.worldmandia.webshoppersonal.di.coreModule
 import cc.worldmandia.webshoppersonal.di.viewModule
 import cc.worldmandia.webshoppersonal.entity.BrowserData
@@ -46,12 +47,14 @@ sealed class NavKeys {
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
-fun main() = ComposeViewport {
+fun main() = ComposeViewport("root") {
     KoinApplication(application = {
         startKoin {
             modules(listOf(coreModule, viewModule))
         }
     }) {
         BasePage()
+
+        removeLoader()
     }
 }

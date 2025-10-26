@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>NadinImage</title>
+    <title>Example</title>
     <link as="style" href="styles.css" rel="preload"/>
-    <link as="script" href="composeApp.js" rel="preload"/>
     <link href="styles.css" rel="stylesheet"/>
-    <script defer src="composeApp.js"></script>
     <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+    <link as="script" href="composeApp.js" rel="preload"/>
 </head>
 <body>
+<div id="loader">
+    <div class="spinner"></div>
+</div>
+
+<div id="root"></div>
+
+<script src="composeApp.js" defer></script>
 </body>
 </html>
