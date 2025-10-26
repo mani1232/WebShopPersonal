@@ -12,6 +12,12 @@ html, body, #root {
     --md-sys-color-surface: #FEF7FF;
 }
 
+html.dark {
+    --md-sys-color-primary: #D0BCFF;
+    --md-sys-color-surface-variant: #49454F;
+    --md-sys-color-surface: #1D1B20;
+}
+
 #loader {
     position: fixed;
     inset: 0;
