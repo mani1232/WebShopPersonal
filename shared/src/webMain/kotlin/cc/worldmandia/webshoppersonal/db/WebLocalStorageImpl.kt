@@ -2,7 +2,7 @@ package cc.worldmandia.webshoppersonal.db
 
 import web.storage.localStorage
 
-class WebLocalStorageImpl : StringBasedStorage {
+open class WebLocalStorageImpl : StringBasedStorage {
     override fun get(key: String): String? {
         return localStorage.getItem(key)
     }

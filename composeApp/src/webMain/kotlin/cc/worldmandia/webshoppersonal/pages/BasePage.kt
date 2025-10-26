@@ -25,19 +25,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import cc.worldmandia.webshoppersonal.LocalAppSettings
+import cc.worldmandia.webshoppersonal.NavKeys
 import cc.worldmandia.webshoppersonal.entity.BrowserData
 import cc.worldmandia.webshoppersonal.models.BasePageViewModel
+import cc.worldmandia.webshoppersonal.navSerializerModule
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.getKoin
@@ -46,17 +43,6 @@ import webshoppersonal.composeapp.generated.resources.france
 import webshoppersonal.composeapp.generated.resources.russia
 import webshoppersonal.composeapp.generated.resources.ukraine
 
-@Serializable
-sealed class Routes {
-    @Serializable
-    object MainPage : NavKey
-
-    @Serializable
-    object AboutUs : NavKey
-
-    @Serializable
-    object Contact : NavKey
-}
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +60,10 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
 
             val lazyState = rememberLazyListState()
 
+            val backStack = rememberNavBackStack(SavedStateConfiguration {
+                navSerializerModule
+            }, LocalAppSettings.current.navKey)
+
             Scaffold(
                 modifier = Modifier.fillMaxSize().safeContentPadding()
                     .nestedScroll(scrollTopBehavior.nestedScrollConnection)
@@ -84,6 +74,18 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
                         },
                         scrollBehavior = scrollTopBehavior,
                         actions = {
+                            OutlinedButton(onClick = {
+                                backStack.add(NavKeys.Contact)
+                                basePageViewModel.updateNavKey(NavKeys.Contact)
+                            }) {
+                                Text("Contact us")
+                            }
+                            OutlinedButton(onClick = {
+                                backStack.add(NavKeys.AboutUs)
+                                basePageViewModel.updateNavKey(NavKeys.AboutUs)
+                            }) {
+                                Text("About us")
+                            }
                             IconButton(onClick = {
                                 scope.launch {
                                     lazyState.animateScrollToItem(lazyState.layoutInfo.totalItemsCount - 1)
@@ -140,54 +142,50 @@ fun BasePage(basePageViewModel: BasePageViewModel = getKoin().get()) {
                         }
                     }
                 }) { innerPadding ->
-
-                //MainPageContent(lazyState = lazyState, innerPadding = innerPadding)
-
-                val backStack = rememberNavBackStack(SavedStateConfiguration {
-                    serializersModule = SerializersModule {
-                        polymorphic(NavKey::class) {
-                            subclass(Routes.MainPage::class)
-                            subclass(Routes.AboutUs::class)
-                            subclass(Routes.Contact::class)
-                        }
-                    }
-                }, Routes.MainPage)
-
                 NavDisplay(
                     backStack = backStack,
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = {
+                        if (backStack.isNotEmpty()) backStack.removeLastOrNull()
+                    },
                     entryProvider = entryProvider {
-                        entry<Routes.MainPage> {
+                        entry<NavKeys.MainPage> {
                             MainPageContent(lazyState = lazyState, innerPadding = innerPadding) {
-                                Button(onClick = { backStack.add(Routes.AboutUs) }) {
-                                    Text("Go to Screen B")
-                                }
-                                Button(onClick = { backStack.removeLastOrNull() }) {
-                                    Text("Try to back")
+                                Button(onClick = {
+                                    // TODO
+                                }) {
+                                    Text("Try to back, but it's not possible")
                                 }
                             }
                         }
-                        entry<Routes.AboutUs> {
+                        entry<NavKeys.AboutUs> {
                             BaseContentPage(
                                 lazyState = lazyState, innerPadding = innerPadding,
                                 other = buildList {
                                     add {
-                                        Button(onClick = { backStack.add(Routes.Contact) }) {
-                                            Text("Go to Screen C")
-                                        }
-                                    }
-                                    add {
-                                        Button(onClick = { backStack.removeLastOrNull() }) {
+                                        Button(onClick = {
+                                            backStack[backStack.lastIndex] = NavKeys.MainPage
+                                            basePageViewModel.updateNavKey(NavKeys.MainPage)
+                                        }) {
                                             Text("Back")
                                         }
                                     }
                                 },
                             )
                         }
-                        entry<Routes.Contact> {
-                            Button(onClick = { backStack.removeLastOrNull() }) {
-                                Text("Back")
-                            }
+                        entry<NavKeys.Contact> {
+                            BaseContentPage(
+                                lazyState = lazyState, innerPadding = innerPadding,
+                                other = buildList {
+                                    add {
+                                        Button(onClick = {
+                                            backStack[backStack.lastIndex] = NavKeys.MainPage
+                                            basePageViewModel.updateNavKey(NavKeys.MainPage)
+                                        }) {
+                                            Text("Main page")
+                                        }
+                                    }
+                                },
+                            )
                         }
                     },
                     //transitionSpec = {

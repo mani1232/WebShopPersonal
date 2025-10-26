@@ -19,6 +19,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://jitpack.io")
         mavenCentral()
         google {
             mavenContent {
@@ -29,9 +30,13 @@ dependencyResolutionManagement {
         }
     }
     versionCatalogs {
+        val wrappersVersion = "2025.10.10"
+        val cryptographyVersion = "0.5.0"
         create("kotlinWrappers") {
-            val wrappersVersion = "2025.10.5"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
+        }
+        create("cryptographyLibs") {
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:$cryptographyVersion")
         }
     }
 }

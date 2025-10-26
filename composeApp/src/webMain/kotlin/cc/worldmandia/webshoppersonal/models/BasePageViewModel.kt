@@ -1,5 +1,6 @@
 package cc.worldmandia.webshoppersonal.models
 
+import androidx.navigation3.runtime.NavKey
 import cc.worldmandia.webshoppersonal.db.JsonBasedRepository
 import cc.worldmandia.webshoppersonal.entity.BrowserData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,22 +15,33 @@ class BasePageViewModel(private val repo: JsonBasedRepository) {
     val settings: StateFlow<BrowserData> = _browserData
 
     fun toggleTheme() {
+        update {
+            it.theme = if (it.theme == BrowserData.Theme.LIGHT) BrowserData.Theme.DARK else BrowserData.Theme.LIGHT
+        }
+    }
+
+    private fun update(updateFun: (BrowserData) -> Unit) {
         _browserData.update {
-            val updated =
-                it.copy(theme = if (it.theme == BrowserData.Theme.LIGHT) BrowserData.Theme.DARK else BrowserData.Theme.LIGHT)
-            repo.save(
-                browserDataId,
-                updated,
-                BrowserData.serializer()
-            )
-            updated
+            it.copy().also { new ->
+                updateFun(new)
+                repo.save(
+                    browserDataId,
+                    new
+                )
+            }
+        }
+    }
+
+    fun updateNavKey(newNavKey: NavKey) {
+        update {
+            it.navKey = newNavKey
         }
     }
 
     private fun load(defaultValue: BrowserData = BrowserData()): BrowserData {
         return repo.loadOrFetch(browserDataId, fetcher = {
             defaultValue
-        }, BrowserData.serializer())
+        })
     }
 
 }

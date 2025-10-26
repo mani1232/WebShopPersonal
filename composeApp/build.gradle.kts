@@ -41,6 +41,16 @@ kotlin {
             implementation(projects.shared)
 
             implementation(libs.coroutines)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.serialization.json)
+
+            implementation(libs.coil.compose)
+            implementation(libs.coil.ktor3)
+            // implementation(libs.coil.avif) not support wasm yet
+
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.navigation)
         }

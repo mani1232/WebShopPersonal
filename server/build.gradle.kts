@@ -21,11 +21,11 @@ kotlin {
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
-    implementation(libs.ktor.serverCore)
-    implementation(libs.ktor.serverNetty)
-    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.serialization)
     implementation(libs.ktor.serialization.json)
-    testImplementation(libs.ktor.serverTestHost)
+    testImplementation(libs.ktor.server.testHost)
     testImplementation(libs.kotlin.testJunit)
 
     implementation(libs.coroutines)

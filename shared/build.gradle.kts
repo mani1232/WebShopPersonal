@@ -21,7 +21,10 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.coroutines)
             implementation(libs.koin)
+            implementation(libs.serialization)
             implementation(libs.serialization.json)
+            implementation(cryptographyLibs.core)
+            implementation(cryptographyLibs.provider.optimal)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
