@@ -66,6 +66,9 @@ ktor {
         //    )
         //)
         jib {
+            from {
+                image = "azul/zulu-openjdk:25-latest"
+            }
             container {
                 workingDirectory = "/home/container"
             }
