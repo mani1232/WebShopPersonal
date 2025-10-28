@@ -40,7 +40,7 @@ ktor {
         jreVersion.set(JavaVersion.VERSION_25)
         localImageName.set("wsh-backend")
         imageTag.set(version.toString())
-        customBaseImage.set("azul/zulu-openjdk:25-latest")
+        customBaseImage.set("ghcr.io/parkervcp/yolks:java_25")
 
         //portMappings.set(listOf(
         //    DockerPortMapping(
