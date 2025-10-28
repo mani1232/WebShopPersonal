@@ -42,13 +42,13 @@ ktor {
         imageTag.set(version.toString())
         customBaseImage.set("azul/zulu-openjdk:25-latest")
 
-        portMappings.set(listOf(
-            DockerPortMapping(
-                49152,
-                49152,
-                DockerPortMappingProtocol.TCP
-            )
-        ))
+        //portMappings.set(listOf(
+        //    DockerPortMapping(
+        //        49152,
+        //        49152,
+        //        DockerPortMappingProtocol.TCP
+        //    )
+        //))
 
         externalRegistry.set(DockerImageRegistry.externalRegistry(
             username = providers.environmentVariable("GITHUB_USERNAME"),
@@ -66,9 +66,6 @@ ktor {
         //    )
         //)
         jib {
-            from {
-                image = "azul/zulu-openjdk:25-latest"
-            }
             container {
                 workingDirectory = "/home/container"
             }
