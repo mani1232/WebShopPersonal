@@ -53,7 +53,7 @@ ktor {
         externalRegistry.set(DockerImageRegistry.externalRegistry(
             username = providers.environmentVariable("GITHUB_USERNAME"),
             password = providers.environmentVariable("GITHUB_PASSWORD"),
-            project = provider { "WebShopPersonal" },
+            project = provider { "wsh-backend" },
             //hostname = provider { "ghcr.io" },
             //namespace = provider { "mani1232" }
         ))
