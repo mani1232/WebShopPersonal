@@ -1,5 +1,6 @@
 package cc.worldmandia.webshoppersonal
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -46,8 +47,11 @@ sealed class NavKeys {
     object Contact : NavKey, NavKeys()
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class
+)
 fun main() = ComposeViewport("root") {
+    //ComposeFoundationFlags.isNewContextMenuEnabled = true
     KoinApplication(application = {
         startKoin {
             modules(listOf(coreModule, viewModule))

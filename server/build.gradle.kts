@@ -1,4 +1,6 @@
 import io.ktor.plugin.features.DockerImageRegistry
+import io.ktor.plugin.features.DockerPortMapping
+import io.ktor.plugin.features.DockerPortMappingProtocol
 
 plugins {
     alias(libs.plugins.kotlinJvm)
@@ -40,13 +42,29 @@ ktor {
         imageTag.set(version.toString())
         customBaseImage.set("azul/zulu-openjdk:25-latest")
 
-        externalRegistry.set(
-            DockerImageRegistry.dockerHub(
-                appName = provider { "wsh-backend" },
-                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
-                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+        portMappings.set(listOf(
+            DockerPortMapping(
+                49152,
+                49152,
+                DockerPortMappingProtocol.TCP
             )
-        )
+        ))
+
+        externalRegistry.set(DockerImageRegistry.externalRegistry(
+            username = providers.environmentVariable("GITHUB_USERNAME"),
+            password = providers.environmentVariable("GITHUB_PASSWORD"),
+            project = provider { "WebShopPersonal" },
+            hostname = provider { "ghcr.io" },
+            namespace = provider { "mani1232" }
+        ))
+
+        //externalRegistry.set(
+        //    DockerImageRegistry.dockerHub(
+        //        appName = provider { "wsh-backend" },
+        //        username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+        //        password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+        //    )
+        //)
         jib {
             container {
                 workingDirectory = "/home/container"
