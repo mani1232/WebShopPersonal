@@ -1,3 +1,5 @@
+import io.ktor.plugin.features.DockerImageRegistry
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
@@ -15,7 +17,7 @@ application {
 }
 
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(25)
 }
 
 dependencies {
@@ -29,4 +31,26 @@ dependencies {
     testImplementation(libs.kotlin.testJunit)
 
     implementation(libs.coroutines)
+}
+
+ktor {
+    docker {
+        jreVersion.set(JavaVersion.VERSION_25)
+        localImageName.set("wsh-backend")
+        imageTag.set(version.toString())
+        customBaseImage.set("azul/zulu-openjdk:25-latest")
+
+        externalRegistry.set(
+            DockerImageRegistry.dockerHub(
+                appName = provider { "wsh-backend" },
+                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+            )
+        )
+        jib {
+            container {
+                workingDirectory = "/home/container"
+            }
+        }
+    }
 }

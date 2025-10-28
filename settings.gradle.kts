@@ -16,6 +16,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     repositories {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -30,7 +34,7 @@ dependencyResolutionManagement {
         }
     }
     versionCatalogs {
-        val wrappersVersion = "2025.10.10"
+        val wrappersVersion = "2025.10.13"
         val cryptographyVersion = "0.5.0"
         create("kotlinWrappers") {
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")

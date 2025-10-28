@@ -5,14 +5,18 @@ import cc.worldmandia.webshoppersonal.i18n.mainPage
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.CompressedFileType
+import io.ktor.server.http.content.ETagProvider
+import io.ktor.server.http.content.staticFiles
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import java.io.File
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = {
+    embeddedServer(Netty, port = 49152, host = "0.0.0.0", module = {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = false
@@ -25,6 +29,12 @@ fun main() {
 }
 
 fun Application.backend() = routing {
+    staticFiles("/static", File("files").also { it.mkdirs() }) {
+        preCompressed(CompressedFileType.BROTLI, CompressedFileType.GZIP)
+        etag(ETagProvider.StrongSha256)
+        exclude { file -> file.name.startsWith("*") }
+    }
+
     get("/") {
         call.respondText("Ktor: ${Greeting().greet()}")
     }

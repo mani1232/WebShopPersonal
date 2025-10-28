@@ -33,6 +33,8 @@ kotlin {
             dependsOn(commonMain.get())
             dependencies {
                 implementation(kotlinWrappers.browser)
+                implementation(kotlinWrappers.cssomCore)
+                implementation(kotlinWrappers.web)
             }
         }
 
