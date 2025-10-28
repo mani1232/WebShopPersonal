@@ -54,8 +54,8 @@ ktor {
             username = providers.environmentVariable("GITHUB_USERNAME"),
             password = providers.environmentVariable("GITHUB_PASSWORD"),
             project = provider { "WebShopPersonal" },
-            hostname = provider { "ghcr.io" },
-            namespace = provider { "mani1232" }
+            //hostname = provider { "ghcr.io" },
+            //namespace = provider { "mani1232" }
         ))
 
         //externalRegistry.set(
