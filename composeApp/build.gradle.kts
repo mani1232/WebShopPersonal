@@ -25,10 +25,10 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
+            implementation("org.jetbrains.compose.material3:material3:1.10.0-alpha04+dev3171")
             implementation(compose.ui)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.material3AdaptiveNavigationSuite)
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
+            implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.10.0-alpha04+dev3171")
             implementation(compose.components.resources)
             implementation(compose.preview)
 
