@@ -34,7 +34,7 @@ dependencyResolutionManagement {
         }
     }
     versionCatalogs {
-        val wrappersVersion = "2025.10.13"
+        val wrappersVersion = "2025.10.14"
         val cryptographyVersion = "0.5.0"
         create("kotlinWrappers") {
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")

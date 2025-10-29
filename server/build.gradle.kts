@@ -40,16 +40,16 @@ ktor {
         jreVersion.set(JavaVersion.VERSION_25)
         localImageName.set("wsh-backend")
         imageTag.set(version.toString())
-        //customBaseImage.set("parkervcp/yolks:java_25")
+        customBaseImage.set("azul/zulu-openjdk:25-latest")
 
 
-        //portMappings.set(listOf(
-        //    DockerPortMapping(
-        //        49152,
-        //        49152,
-        //        DockerPortMappingProtocol.TCP
-        //    )
-        //))
+        portMappings.set(listOf(
+            DockerPortMapping(
+                49152,
+                49152,
+                DockerPortMappingProtocol.TCP
+            )
+        ))
 
         externalRegistry.set(DockerImageRegistry.externalRegistry(
             username = providers.environmentVariable("GITHUB_USERNAME"),
@@ -59,6 +59,7 @@ ktor {
             namespace = provider { "mani1232" }
         ))
 
+        // For DOCKER_HUB
         //externalRegistry.set(
         //    DockerImageRegistry.dockerHub(
         //        appName = provider { "wsh-backend" },
